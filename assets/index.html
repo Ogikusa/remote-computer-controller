@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+  </head>
+  <body lang="ja">
+    <h1>Remote Monitor Controller</h1>
+    <button id="monitor-off">Turn off monitor</button>
+    <button id="monitor-on">Turn on monitor</button>
+    <script>
+      const monitorOffButton = document.querySelector("#monitor-off");
+      monitorOffButton.addEventListener("click", async () => {
+        await fetch("/monitor-off", { method: "POST" });
+      });
+      const monitorOnButton = document.querySelector("#monitor-on");
+      monitorOnButton.addEventListener("click", async () => {
+        await fetch("/monitor-on", { method: "POST" });
+      });
+    </script>
+  </body>
+</html>
