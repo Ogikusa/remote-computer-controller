@@ -1,9 +1,9 @@
-import { Application, Context, Router } from "@oak/oak";
+import { Application, Router } from "@oak/oak";
 import {
-getVolume,
+  getVolume,
   monitorOff,
   monitorOn,
-  setVolumeToZero,
+  setVolume,
 } from "./util/library-wrapper.ts";
 
 const router = new Router();
@@ -16,12 +16,14 @@ router.post("/monitor-on", () => {
   monitorOn();
 });
 
-router.post("/volume-zero", () => {
-  setVolumeToZero();
+router.post("/volume", (ctx) => {
+  const volume = ctx.request.url.searchParams.get("volume") ?? "0.0";
+  const volumeNumber = Number.parseFloat(volume);
+  setVolume(volumeNumber / 100);
 });
 
 router.get("/volume", (ctx) => {
-   ctx.response.body = getVolume();
+  ctx.response.body = getVolume() * 100;
 });
 
 const app = new Application();

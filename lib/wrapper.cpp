@@ -4,7 +4,7 @@
 #include <endpointvolume.h>
 #define DLL_EXPORT __declspec(dllexport)
 
-HRESULT setVolume(float volume)
+extern "C" DLL_EXPORT HRESULT __stdcall setVolume(float volume)
 {
     CoInitialize(nullptr);
 
@@ -61,7 +61,7 @@ HRESULT setVolume(float volume)
     return hr;
 }
 
-float getCurrentVolume()
+extern "C" DLL_EXPORT float getVolume()
 {
     HRESULT hr = CoInitialize(nullptr);
     if (FAILED(hr))
@@ -117,7 +117,7 @@ float getCurrentVolume()
     pEnumerator->Release();
     CoUninitialize();
 
-    return currentVolume * 100;
+    return currentVolume;
 }
 
 extern "C" DLL_EXPORT void monitorOff()
@@ -130,15 +130,4 @@ extern "C" DLL_EXPORT void monitorOn()
     SendMessageW(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM)-1);
     mouse_event(MOUSEEVENTF_MOVE, 1, 0, 0, 0);
     mouse_event(MOUSEEVENTF_MOVE, -1, 0, 0, 0);
-}
-
-extern "C" DLL_EXPORT void setVolumeToZero()
-{
-    setVolume(0.0f);
-}
-
-extern "C" DLL_EXPORT float getVolume()
-{
-    float volume = getCurrentVolume();
-    return volume;
 }

@@ -13,10 +13,11 @@
         <button id="monitor-off">Turn off monitor</button>
         <button id="monitor-on">Turn on monitor</button>
         <button id="volume-zero">Volume 0</button>
+        <button id="restore-volume">Restore Volume</button>
       </div>
     </div>
     <script>
-      <!-- aa -->
+      let previousVolume = -1;
       const monitorOffButton = document.querySelector("#monitor-off");
       monitorOffButton.addEventListener("click", async () => {
         await fetch("/monitor-off", { method: "POST" });
@@ -29,7 +30,15 @@
 
       const volumeZeroButton = document.querySelector("#volume-zero");
       volumeZeroButton.addEventListener("click", async () => {
-        await fetch("/volume-zero", { method: "POST" });
+        const currentVolume = await (await fetch("/volume")).text();
+        previousVolume = currentVolume == "0" ? previousVolume : currentVolume;
+        await fetch("/volume?volume=0", { method: "POST" });
+      });
+
+      const restoreVolumeButton = document.querySelector("#restore-volume");
+      restoreVolumeButton.addEventListener("click", async () => {
+        if (previousVolume === -1) return;
+        await fetch(`/volume?volume=${previousVolume}`, { method: "POST" });
       });
     </script>
     <style>
