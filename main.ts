@@ -1,5 +1,5 @@
 import { Application, Router } from "@oak/oak";
-import { monitorOff, monitorOn } from "./lib/ffi-wrapper.ts";
+import { monitorOff, monitorOn, setVolumeToZero } from "./util/library-wrapper.ts";
 
 const router = new Router();
 
@@ -9,6 +9,10 @@ router.post("/monitor-off", () => {
 
 router.post("/monitor-on", () => {
   monitorOn();
+});
+
+router.post("/volume-zero", () => {
+  setVolumeToZero();
 });
 
 const app = new Application();

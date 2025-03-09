@@ -3,12 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Page Title</title>
   </head>
   <body lang="ja">
-    <h1>Remote Monitor Controller</h1>
-    <button id="monitor-off">Turn off monitor</button>
-    <button id="monitor-on">Turn on monitor</button>
+    <h1>Remote Computer Controller</h1>
+    <div>
+      <button id="monitor-off">Turn off monitor</button>
+      <button id="monitor-on">Turn on monitor</button>
+      <button id="volume-zero">Volume 0</button>
+    </div>
     <script>
       const monitorOffButton = document.querySelector("#monitor-off");
       monitorOffButton.addEventListener("click", async () => {
@@ -18,6 +22,15 @@
       monitorOnButton.addEventListener("click", async () => {
         await fetch("/monitor-on", { method: "POST" });
       });
+      const volumeZeroButton = document.querySelector("#volume-zero");
+      volumeZeroButton.addEventListener("click", async () => {
+        await fetch("/volume-zero", { method: "POST" });
+      });
     </script>
+    <style>
+      h1 {
+        margin: 0;
+      }
+    </style>
   </body>
 </html>
