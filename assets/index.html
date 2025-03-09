@@ -4,32 +4,80 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Page Title</title>
+    <title>Remote Computer Controller</title>
   </head>
   <body lang="ja">
-    <h1>Remote Computer Controller</h1>
-    <div>
-      <button id="monitor-off">Turn off monitor</button>
-      <button id="monitor-on">Turn on monitor</button>
-      <button id="volume-zero">Volume 0</button>
+    <div class="container">
+      <h1>Remote Computer Controller</h1>
+      <div class="button-container">
+        <button id="monitor-off">Turn off monitor</button>
+        <button id="monitor-on">Turn on monitor</button>
+        <button id="volume-zero">Volume 0</button>
+      </div>
     </div>
     <script>
+      <!-- aa -->
       const monitorOffButton = document.querySelector("#monitor-off");
       monitorOffButton.addEventListener("click", async () => {
         await fetch("/monitor-off", { method: "POST" });
       });
+
       const monitorOnButton = document.querySelector("#monitor-on");
       monitorOnButton.addEventListener("click", async () => {
         await fetch("/monitor-on", { method: "POST" });
       });
+
       const volumeZeroButton = document.querySelector("#volume-zero");
       volumeZeroButton.addEventListener("click", async () => {
         await fetch("/volume-zero", { method: "POST" });
       });
     </script>
     <style>
+      html {
+        width: 100vw;
+        height: 100vh;
+      }
+
+      body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+
       h1 {
         margin: 0;
+        font-size: 25px;
+      }
+
+      .container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .button-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .button-container button {
+        width: 40%;
+        height: 50px;
+        color: black;
+        background-color: white;
+        border: 1px solid black;
+      }
+
+      @media screen and (max-width: 600px) {
+        .button-container button {
+          width: 100%;
+        }
       }
     </style>
   </body>

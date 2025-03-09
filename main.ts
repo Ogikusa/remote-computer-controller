@@ -1,5 +1,10 @@
-import { Application, Router } from "@oak/oak";
-import { monitorOff, monitorOn, setVolumeToZero } from "./util/library-wrapper.ts";
+import { Application, Context, Router } from "@oak/oak";
+import {
+getVolume,
+  monitorOff,
+  monitorOn,
+  setVolumeToZero,
+} from "./util/library-wrapper.ts";
 
 const router = new Router();
 
@@ -13,6 +18,10 @@ router.post("/monitor-on", () => {
 
 router.post("/volume-zero", () => {
   setVolumeToZero();
+});
+
+router.get("/volume", (ctx) => {
+   ctx.response.body = getVolume();
 });
 
 const app = new Application();
@@ -31,6 +40,11 @@ app.use(async (ctx) => {
       console.warn("Not found file was requested");
     }
   }
+});
+
+app.addEventListener("listen", ({ port, secure }) => {
+  const protocol = secure ? "https://" : "http://";
+  console.log(`The server started: ${protocol}localhost:${port}`);
 });
 
 app.listen({ port: 8080 });

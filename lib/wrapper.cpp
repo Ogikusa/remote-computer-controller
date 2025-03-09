@@ -61,6 +61,65 @@ HRESULT setVolume(float volume)
     return hr;
 }
 
+float getCurrentVolume()
+{
+    HRESULT hr = CoInitialize(nullptr);
+    if (FAILED(hr))
+    {
+        std::cerr << "COM library initialization failed." << std::endl;
+        return -1.0f;
+    }
+
+    // MMDeviceEnumeratorの作成
+    IMMDeviceEnumerator *pEnumerator = nullptr;
+    hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void **)&pEnumerator);
+    if (FAILED(hr))
+    {
+        std::cerr << "Failed to create MMDeviceEnumerator instance." << std::endl;
+        CoUninitialize();
+        return -1.0f;
+    }
+
+    // デフォルトのオーディオデバイスを取得
+    IMMDevice *pDevice = nullptr;
+    hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &pDevice);
+    if (FAILED(hr))
+    {
+        std::cerr << "Failed to get default audio endpoint." << std::endl;
+        pEnumerator->Release();
+        CoUninitialize();
+        return -1.0f;
+    }
+
+    // IAudioEndpointVolumeを取得
+    IAudioEndpointVolume *pVolume = nullptr;
+    hr = pDevice->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_ALL, nullptr, (void **)&pVolume);
+    if (FAILED(hr))
+    {
+        std::cerr << "Failed to activate IAudioEndpointVolume interface." << std::endl;
+        pDevice->Release();
+        pEnumerator->Release();
+        CoUninitialize();
+        return -1.0f;
+    }
+
+    // 音量の取得（0.0f - 1.0f）
+    float currentVolume = 0.0f;
+    hr = pVolume->GetMasterVolumeLevelScalar(&currentVolume);
+    if (FAILED(hr))
+    {
+        std::cerr << "Failed to get the current volume." << std::endl;
+    }
+
+    // 解放
+    pVolume->Release();
+    pDevice->Release();
+    pEnumerator->Release();
+    CoUninitialize();
+
+    return currentVolume * 100;
+}
+
 extern "C" DLL_EXPORT void monitorOff()
 {
     SendMessageW(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM)2);
@@ -76,4 +135,10 @@ extern "C" DLL_EXPORT void monitorOn()
 extern "C" DLL_EXPORT void setVolumeToZero()
 {
     setVolume(0.0f);
+}
+
+extern "C" DLL_EXPORT float getVolume()
+{
+    float volume = getCurrentVolume();
+    return volume;
 }
